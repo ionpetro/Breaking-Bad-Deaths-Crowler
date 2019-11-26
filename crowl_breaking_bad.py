@@ -5,9 +5,12 @@ import requests
 from bs4 import BeautifulSoup
 import argparse
 
+
 parser = argparse.ArgumentParser(description='Add the path where you want to save the data. Path example: C:\<name>\<directory>\outcome.csv')
-parser.add_argument('path', help='an integer for the accumulator')
+parser.add_argument('path', help='dont forget to add filename in the end (output.csv)')
 args = parser.parse_args()
+path = args.path
+print(path)
 
 try:
     r = requests.get('https://breakingbad.fandom.com/wiki/List_of_deaths_on_Breaking_Bad')
@@ -49,5 +52,9 @@ else:
     result = np.asarray(records)
     result = result.reshape(-1,5)
     df_result = pd.DataFrame(result, columns=columns)
-
-    bbd = df_result.to_csv(r'C:\Users\Ion\Desktop\bbd.csv', index=False, header=True)
+    try:
+        df_result.to_csv(path, index=False, header=True)
+    except TimeoutError as te:
+        print(te)
+    else:
+        print('Dataset created successfully!')
